@@ -1,7 +1,19 @@
 import { validationResult } from 'express-validator'
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken'
+import { key } from '../config.js'
 import User from '../models/User.js'
 
+const generateAccessToken = (id, username) => {
+    const payload = {
+        id,
+        username
+    }
+    return jwt.sign(payload, key.secret, {
+        expiresIn: '1h'
+    })
+}
+ 
 class AuthController {
 	async registration(req, res) {
 		try {
@@ -29,6 +41,25 @@ class AuthController {
 			return res.status(400).json({ message: 'Failed to register' })
 		}
 	}
+
+    async login(req, res) {
+        try {
+            const {username, password} = req.body
+            const user = await User.findOne({username})
+            if (!user) {
+                return res.status(400).json({message: `User with name ${username} was not found`})
+            }
+            const validPassword = bcrypt.compareSync(password, user.password)
+            if (!validPassword) {
+                return res.status(400).json({message: 'Invalid password'})
+            }
+            const token = generateAccessToken(user._id, user.username)
+            return res.status(200).json({ token })
+        } catch (e) {
+            console.error('Failed to login', e)
+            return res.status(200).json({ message: 'Failed to login '})
+        }
+    }
 }
 
 export default new AuthController()

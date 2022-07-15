@@ -17,4 +17,6 @@ router.post(
 	authController.registration
 )
 
+router.post('/login', authController.login)
+
 export default router
