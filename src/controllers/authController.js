@@ -1,7 +1,8 @@
 import { validationResult } from 'express-validator'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import { key } from '../config.js'
+import axios from 'axios'
+import { FEED_CONTENT_API_KEY, key } from '../config.js'
 import User from '../models/User.js'
 
 const generateAccessToken = (id, username) => {
@@ -88,6 +89,17 @@ class AuthController {
 			return res.status(400).json({ message: 'Failed to get favourites' })
 		}
 	}
+
+    async getFeedContent(req, res) {
+        try {
+            const response = await axios.get(`https://api.nasa.gov/planetary/apod?api_key=${FEED_CONTENT_API_KEY}4&count=10`)
+            const data = await response.data
+            return res.status(200).json(data)
+        } catch (e) {
+            console.error('Error while getting feed content', e)
+            return res.status(400).json({message: 'Error while getting feed content'})
+        }
+    }
 }
 
 export default new AuthController()

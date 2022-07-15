@@ -20,9 +20,7 @@ router.post(
 
 router.post('/login', authController.login)
 
-router.get('/content', authMiddleware, (req, res) => {
-    res.status(200).json({ message: 'Some content'})
-})
+router.get('/feed', authMiddleware, authController.getFeedContent)
 
 router.post('/add-favourite', authMiddleware, authController.addToFavourites)
 router.get('/favourites', authMiddleware, authController.getFavourites)
