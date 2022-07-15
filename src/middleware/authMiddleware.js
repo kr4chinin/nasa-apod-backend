@@ -14,6 +14,6 @@ export default function(req, res, next) {
         next()
     } catch (e) {
         console.error('User is not authorized', e)
-        return res.status(403).json({message: 'User is not authorized'})
+        return res.status(403).json({ message: 'User is not authorized'})
     }
 }

@@ -24,4 +24,7 @@ router.get('/content', authMiddleware, (req, res) => {
     res.status(200).json({ message: 'Some content'})
 })
 
+router.post('/add-favourite', authMiddleware, authController.addToFavourites)
+router.get('/favourites', authMiddleware, authController.getFavourites)
+
 export default router

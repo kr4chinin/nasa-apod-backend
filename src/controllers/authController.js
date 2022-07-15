@@ -5,15 +5,15 @@ import { key } from '../config.js'
 import User from '../models/User.js'
 
 const generateAccessToken = (id, username) => {
-    const payload = {
-        id,
-        username
-    }
-    return jwt.sign(payload, key.secret, {
-        expiresIn: '1h'
-    })
+	const payload = {
+		id,
+		username
+	}
+	return jwt.sign(payload, key.secret, {
+		expiresIn: '1h'
+	})
 }
- 
+
 class AuthController {
 	async registration(req, res) {
 		try {
@@ -42,24 +42,52 @@ class AuthController {
 		}
 	}
 
-    async login(req, res) {
-        try {
-            const {username, password} = req.body
-            const user = await User.findOne({username})
-            if (!user) {
-                return res.status(400).json({message: `User with name ${username} was not found`})
-            }
-            const validPassword = bcrypt.compareSync(password, user.password)
-            if (!validPassword) {
-                return res.status(400).json({message: 'Invalid password'})
-            }
-            const token = generateAccessToken(user._id, user.username)
-            return res.status(200).json({ token })
-        } catch (e) {
-            console.error('Failed to login', e)
-            return res.status(200).json({ message: 'Failed to login '})
-        }
-    }
+	async login(req, res) {
+		try {
+			const { username, password } = req.body
+			const user = await User.findOne({ username })
+			if (!user) {
+				return res
+					.status(400)
+					.json({ message: `User with name ${username} was not found` })
+			}
+			const validPassword = bcrypt.compareSync(password, user.password)
+			if (!validPassword) {
+				return res.status(400).json({ message: 'Invalid password' })
+			}
+			const token = generateAccessToken(user._id, user.username)
+			return res.status(200).json({ token })
+		} catch (e) {
+			console.error('Failed to login', e)
+			return res.status(400).json({ message: 'Failed to login ' })
+		}
+	}
+
+	async addToFavourites(req, res) {
+		try {
+			const { username, postDate } = req.body
+			const user = await User.findOne({ username })
+			user.favourites.push({ date: postDate })
+			await user.save()
+			return res
+				.status(200)
+				.json({ message: 'Successfully added to favourites' })
+		} catch (e) {
+			console.error('Failed to add to favourites', e)
+			return res.status(400).json({ message: 'Failed to add to favourites' })
+		}
+	}
+
+	async getFavourites(req, res) {
+		try {
+			const { username } = req.body
+			const user = await User.findOne({ username })
+			return res.status(200).json(user.favourites)
+		} catch (e) {
+			console.log('Failed to get favourites', e)
+			return res.status(400).json({ message: 'Failed to get favourites' })
+		}
+	}
 }
 
 export default new AuthController()
