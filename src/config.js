@@ -3,3 +3,4 @@ export const key = {
 }
 
 export const FEED_CONTENT_API_KEY = 'xvhJUFvVoQFHcuXmnhMelkb62YctJA7rtork2dM4'
+export const FEED_CHUNK_SIZE = 10
