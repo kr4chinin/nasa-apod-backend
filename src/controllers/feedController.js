@@ -1,8 +1,8 @@
-import axios from "axios"
+import axios from 'axios'
 import { FEED_CHUNK_SIZE, CONTENT_API_KEY } from '../config.js'
 
 class FeedController {
-    async getFeedContent(req, res) {
+	async getFeedContent(req, res) {
 		try {
 			const response = await axios.get('https://api.nasa.gov/planetary/apod', {
 				params: {

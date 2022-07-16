@@ -15,10 +15,16 @@ router.get('/', (req, res) => {
 router.post(
 	'/registration',
 	[
-		check('username', 'Username can not be empty and must be 4-12 characters long')
+		check(
+			'username',
+			'Username can not be empty and must be 4-12 characters long'
+		)
 			.exists({ checkFalsy: true })
 			.isLength({ min: 4, max: 12 }),
-		check('password', 'Password can not be empty and must be 6-15 characters long')
+		check(
+			'password',
+			'Password can not be empty and must be 6-15 characters long'
+		)
 			.exists({ checkFalsy: true })
 			.isLength({ min: 6, max: 15 })
 	],
