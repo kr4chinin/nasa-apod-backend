@@ -66,7 +66,8 @@ class AuthController {
 
 	async addToFavourites(req, res) {
 		try {
-			const { username, postDate } = req.body
+			const { username } = req.user
+			const { postDate } = req.body
 			const user = await User.findOne({ username })
 			user.favourites.push({ date: postDate })
 			await user.save()
@@ -79,9 +80,36 @@ class AuthController {
 		}
 	}
 
+	async removeFromFavourites(req, res) {
+		try {
+			const { username } = req.user
+			const { postDate } = req.body
+			const user = await User.findOne({ username })
+			let index = user.favourites.findIndex(fav => fav.date === postDate)
+			if (index < 0) {
+				return res
+					.status(400)
+					.json({ message: 'Element not found in favourites array' })
+			}
+			const deletedElement = user.favourites.splice(index, 1)
+			await user.save()
+			return res
+				.status(200)
+				.json({
+					message: 'Successfully removed from favourites',
+					deletedElement: deletedElement[0]
+				})
+		} catch (e) {
+			console.error('Failed to remove from favourites', e)
+			return res
+				.status(400)
+				.json({ message: 'Failed to remove from favourites' })
+		}
+	}
+
 	async getFavourites(req, res) {
 		try {
-			const { username } = req.body
+			const { username } = req.user
 			const user = await User.findOne({ username })
 			return res.status(200).json(user.favourites)
 		} catch (e) {
@@ -90,16 +118,20 @@ class AuthController {
 		}
 	}
 
-    async getFeedContent(req, res) {
-        try {
-            const response = await axios.get(`https://api.nasa.gov/planetary/apod?api_key=${FEED_CONTENT_API_KEY}&count=${FEED_CHUNK_SIZE}`)
-            const data = await response.data
-            return res.status(200).json(data)
-        } catch (e) {
-            console.error('Error while getting feed content', e)
-            return res.status(400).json({message: 'Error while getting feed content'})
-        }
-    }
+	async getFeedContent(req, res) {
+		try {
+			const response = await axios.get(
+				`https://api.nasa.gov/planetary/apod?api_key=${FEED_CONTENT_API_KEY}&count=${FEED_CHUNK_SIZE}`
+			)
+			const data = await response.data
+			return res.status(200).json(data)
+		} catch (e) {
+			console.error('Error while getting feed content', e)
+			return res
+				.status(400)
+				.json({ message: 'Error while getting feed content' })
+		}
+	}
 }
 
 export default new AuthController()

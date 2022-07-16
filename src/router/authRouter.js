@@ -25,4 +25,6 @@ router.get('/feed', authMiddleware, authController.getFeedContent)
 router.post('/add-favourite', authMiddleware, authController.addToFavourites)
 router.get('/favourites', authMiddleware, authController.getFavourites)
 
+router.put('/remove-favourite', authMiddleware, authController.removeFromFavourites)
+
 export default router
