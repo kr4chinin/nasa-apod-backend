@@ -1,9 +1,9 @@
 import axios from 'axios'
-import { CONTENT_API_KEY } from '../config.js' 
+import { CONTENT_API_KEY } from '../config.js'
 import User from '../models/User.js'
 
 class FavouritesController {
-    async addToFavourites(req, res) {
+	async addToFavourites(req, res) {
 		try {
 			const { username } = req.user
 			const { postDate } = req.body
@@ -19,7 +19,7 @@ class FavouritesController {
 		}
 	}
 
-    async removeFromFavourites(req, res) {
+	async removeFromFavourites(req, res) {
 		try {
 			const { username } = req.user
 			const { postDate } = req.body
@@ -44,22 +44,27 @@ class FavouritesController {
 		}
 	}
 
-    async getFavourites(req, res) {
+	async getFavourites(req, res) {
 		try {
 			const { username } = req.user
 			const user = await User.findOne({ username })
-            const favouritePosts = []
-			for (let fav of user.favourites) {
-				let favouritePost = await axios.get('https://api.nasa.gov/planetary/apod', {
-					params: {
-						api_key: CONTENT_API_KEY,
-						date: fav.date
-					}
-				})
-                const data = await favouritePost.data
-                favouritePosts.push(data)
+			const favouritePosts = []
+			if (user.favourites.length > 0) {
+				for (let fav of user.favourites) {
+					let favouritePost = await axios.get(
+						'https://api.nasa.gov/planetary/apod',
+						{
+							params: {
+								api_key: CONTENT_API_KEY,
+								date: fav.date
+							}
+						}
+					)
+					const data = await favouritePost.data
+					favouritePosts.push(data)
+				}
 			}
-            return res.status(200).json(favouritePosts)
+			return res.status(200).json(favouritePosts)
 		} catch (e) {
 			console.log('Failed to get favourites', e)
 			return res.status(400).json({ message: 'Failed to get favourites' })
