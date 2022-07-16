@@ -1,6 +1,8 @@
 import { Router } from 'express'
 import { check } from 'express-validator'
 import authController from '../controllers/authController.js'
+import favouritesController from '../controllers/favouritesController.js'
+import feedController from '../controllers/feedController.js'
 import authMiddleware from '../middleware/authMiddleware.js'
 
 const router = new Router()
@@ -20,11 +22,12 @@ router.post(
 
 router.post('/login', authController.login)
 
-router.get('/feed', authMiddleware, authController.getFeedContent)
+router.get('/feed', authMiddleware, feedController.getFeedContent)
 
-router.post('/add-favourite', authMiddleware, authController.addToFavourites)
-router.get('/favourites', authMiddleware, authController.getFavourites)
+router.put('/add-favourite', authMiddleware, favouritesController.addToFavourites)
 
-router.put('/remove-favourite', authMiddleware, authController.removeFromFavourites)
+router.get('/favourites', authMiddleware, favouritesController.getFavourites)
+
+router.put('/remove-favourite', authMiddleware, favouritesController.removeFromFavourites)
 
 export default router

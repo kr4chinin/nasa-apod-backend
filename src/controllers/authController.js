@@ -1,16 +1,15 @@
 import { validationResult } from 'express-validator'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
-import axios from 'axios'
-import { FEED_CHUNK_SIZE, FEED_CONTENT_API_KEY, key } from '../config.js'
 import User from '../models/User.js'
+import { SECRET_KEY } from '../config.js'
 
 const generateAccessToken = (id, username) => {
 	const payload = {
 		id,
 		username
 	}
-	return jwt.sign(payload, key.secret, {
+	return jwt.sign(payload, SECRET_KEY, {
 		expiresIn: '1h'
 	})
 }
@@ -61,75 +60,6 @@ class AuthController {
 		} catch (e) {
 			console.error('Failed to login', e)
 			return res.status(400).json({ message: 'Failed to login ' })
-		}
-	}
-
-	async addToFavourites(req, res) {
-		try {
-			const { username } = req.user
-			const { postDate } = req.body
-			const user = await User.findOne({ username })
-			user.favourites.push({ date: postDate })
-			await user.save()
-			return res
-				.status(200)
-				.json({ message: 'Successfully added to favourites' })
-		} catch (e) {
-			console.error('Failed to add to favourites', e)
-			return res.status(400).json({ message: 'Failed to add to favourites' })
-		}
-	}
-
-	async removeFromFavourites(req, res) {
-		try {
-			const { username } = req.user
-			const { postDate } = req.body
-			const user = await User.findOne({ username })
-			let index = user.favourites.findIndex(fav => fav.date === postDate)
-			if (index < 0) {
-				return res
-					.status(400)
-					.json({ message: 'Element not found in favourites array' })
-			}
-			const deletedElement = user.favourites.splice(index, 1)
-			await user.save()
-			return res
-				.status(200)
-				.json({
-					message: 'Successfully removed from favourites',
-					deletedElement: deletedElement[0]
-				})
-		} catch (e) {
-			console.error('Failed to remove from favourites', e)
-			return res
-				.status(400)
-				.json({ message: 'Failed to remove from favourites' })
-		}
-	}
-
-	async getFavourites(req, res) {
-		try {
-			const { username } = req.user
-			const user = await User.findOne({ username })
-			return res.status(200).json(user.favourites)
-		} catch (e) {
-			console.log('Failed to get favourites', e)
-			return res.status(400).json({ message: 'Failed to get favourites' })
-		}
-	}
-
-	async getFeedContent(req, res) {
-		try {
-			const response = await axios.get(
-				`https://api.nasa.gov/planetary/apod?api_key=${FEED_CONTENT_API_KEY}&count=${FEED_CHUNK_SIZE}`
-			)
-			const data = await response.data
-			return res.status(200).json(data)
-		} catch (e) {
-			console.error('Error while getting feed content', e)
-			return res
-				.status(400)
-				.json({ message: 'Error while getting feed content' })
 		}
 	}
 }
