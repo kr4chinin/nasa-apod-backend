@@ -33,7 +33,11 @@ router.post(
 
 router.post('/login', authController.login)
 
+router.get('/username', authMiddleware, userController.getUserName)
+
 router.get('/feed', authMiddleware, feedController.getFeedContent)
+
+router.get('/favourites', authMiddleware, favouritesController.getFavourites)
 
 router.put(
 	'/add-favourite',
@@ -41,14 +45,10 @@ router.put(
 	favouritesController.addToFavourites
 )
 
-router.get('/favourites', authMiddleware, favouritesController.getFavourites)
-
 router.put(
 	'/remove-favourite',
 	authMiddleware,
 	favouritesController.removeFromFavourites
 )
-
-router.get('/username', authMiddleware, userController.getUserName)
 
 export default router

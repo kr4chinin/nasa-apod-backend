@@ -13,7 +13,6 @@ class FeedController {
 			const data = await response.data
 			return res.status(200).json(data)
 		} catch (e) {
-			console.error('Error while getting feed content', e)
 			return res
 				.status(400)
 				.json({ message: 'Error while getting feed content' })

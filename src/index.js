@@ -1,14 +1,14 @@
 import express from 'express'
 import cors from 'cors'
-import authRouter from './router/authRouter.js'
+import mainRouter from './router/mainRouter.js'
 import mongoose from 'mongoose'
-import {DB_URL} from './config.js'
+import { DB_URL } from './config.js'
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
-app.use('/', authRouter)
+app.use('/', mainRouter)
 
 const PORT = process.env.PORT || 3000
 

@@ -18,18 +18,22 @@ class AuthController {
 	async registration(req, res) {
 		try {
 			const errors = validationResult(req)
+
 			if (!errors.isEmpty()) {
 				return res
 					.status(400)
-					.json({ message: '❌ Invalid username or password format!', errors })
+					.json({ message: 'Invalid username or password format!', errors })
 			}
+
 			const { username, password } = req.body
 			const candidate = await User.findOne({ username })
+
 			if (candidate) {
 				return res
 					.status(400)
-					.json({ message: '🚫 User with this name already exists!' })
+					.json({ message: 'User with this name already exists!' })
 			}
+
 			const hashedPassword = bcrypt.hashSync(password, 5)
 			const user = new User({
 				username,
@@ -39,8 +43,7 @@ class AuthController {
 			await user.save()
 			return res.status(200).json({ message: 'Successfully registered' })
 		} catch (e) {
-			console.error('Failed to register', e)
-			return res.status(400).json({ message: '⛔️ Failed to register!' })
+			return res.status(400).json({ message: 'Failed to register!' })
 		}
 	}
 
@@ -48,22 +51,23 @@ class AuthController {
 		try {
 			const { username, password } = req.body
 			const user = await User.findOne({ username })
+
 			if (!user) {
-				return res
-					.status(400)
-					.json({
-						message: '⛔️ User with this name was not found, sign up below!'
-					})
+				return res.status(400).json({
+					message: 'User with this name was not found, sign up below!'
+				})
 			}
+
 			const validPassword = bcrypt.compareSync(password, user.password)
+
 			if (!validPassword) {
-				return res.status(400).json({ message: '🚫 Invalid password!' })
+				return res.status(400).json({ message: 'Invalid password!' })
 			}
+
 			const token = generateAccessToken(user._id, user.username)
 			return res.status(200).json({ token })
 		} catch (e) {
-			console.error('Failed to login', e)
-			return res.status(400).json({ message: '🚷 Failed to login! Try again!' })
+			return res.status(400).json({ message: 'Failed to login! Try again!' })
 		}
 	}
 }
