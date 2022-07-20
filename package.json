@@ -4,7 +4,7 @@
 	"description": "backend for nasa-apod project",
 	"main": "index.js",
 	"scripts": {
-		"dev": "nodemon src/index.js"
+		"start": "node src/index.js"
 	},
 	"author": "Ilya Kruchinin",
 	"license": "ISC",
