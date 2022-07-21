@@ -2,9 +2,9 @@
 
 ## Introduction
 
-This is fullstack project made for better representation of [NASA APOD](https://apod.nasa.gov/apod/archivepixFull.html) API. **APOD** stands for Astronomy Picture Of the Day. Client (frontend) logic located in this repo - [nasa-apod-frontend](https://github.com/kr4chinin/nasa-apod-frontend). Try this app live via GitHub Pages [here](https://kr4chinin.github.io/nasa-apod-frontend/#/login).
+This fullstack project made for better representation of [NASA APOD](https://apod.nasa.gov/apod/archivepixFull.html) API. **APOD** stands for Astronomy Picture Of the Day. Client (frontend) logic located in this repo - [nasa-apod-frontend](https://github.com/kr4chinin/nasa-apod-frontend). Try this app live via GitHub Pages [here](https://kr4chinin.github.io/nasa-apod-frontend/#/login).
 
-Server deployed on [Heroku](https://dashboard.heroku.com), here is the [link](https://nasa-apod-project-backend.herokuapp.com).
+Server deployed to [Heroku](https://dashboard.heroku.com), here is the [link](https://nasa-apod-project-backend.herokuapp.com).
 
 ### Functionality
 
